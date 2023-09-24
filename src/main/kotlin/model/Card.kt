@@ -3,10 +3,20 @@ package model
 class Card(
     var name: String,
     private var description: String,
-    private var attack: Int,
-    private var defense: Int
+    var attack: Int,
+    var defense: Int,
+    var type: String
 ) {
+    var position: Int = 0
+
     override fun toString(): String {
-        return "Carta(name='$name', description='$description', n1=$attack, n2=$defense)"
+        return "$name, Atk=$attack, Def=$defense, desc='$description', type='$type'"
+    }
+
+    fun equip(card: Card) {
+        if (card.type == "equipamento") {
+            this.attack += card.attack
+            this.defense += card.defense
+        }
     }
 }

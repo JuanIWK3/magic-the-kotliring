@@ -24,16 +24,18 @@ class CardsReader {
         }
 
         private fun parseCard(card: String): Card {
-            val (name, description, attack, defense) = card.split(';')
-            return Card(name, description, attack.toInt(), defense.toInt())
+            val (name, description, attack, defense, type) = card.split(';')
+            return Card(name, description, attack.toInt(), defense.toInt(), type)
         }
 
-        fun getCardByName(name: String): Card? {
-            return getCards().find { it.name == name }
+        fun getRandomCard(): Card {
+            val card = getCards().shuffled().first()
+            cards = cards?.minus(card)
+            return card
         }
 
         fun get5RandomCards(): List<Card> {
-            return getCards().shuffled().take(5)
+            return (1..5).map { getRandomCard() }
         }
     }
 }
