@@ -90,10 +90,12 @@ class Game {
         }
 
         // iterate over the cards in attack
-        for (card in cardsInAttack) {
-            println("Attacking with ${card.name}\n")
+        for (attackerCard in cardsInAttack) {
+            println("Attacking with ${Colors.RED}${attackerCard.name} ${Colors.RESET} (${attackerCard.attack} attack)")
 
-            println("Select a card to attack:")
+            continueGame()
+
+            println("Select a ${Colors.RED}enemy's card${Colors.RESET} to attack:")
             opponent.printBoardCards()
             var cardToAttackIndex: Int
 
@@ -108,19 +110,24 @@ class Game {
 
             if (cardToAttack.position == 1) {
                 // if the opponent's card is in attack, the opponent loses points equal to the difference between the cards' attack
-                val attackDifference = card.attack - cardToAttack.attack
+                val attackDifference = attackerCard.attack - cardToAttack.attack
                 opponent.points -= attackDifference
-                println(Colors.ORANGE + "${opponent.name} loses $attackDifference points" + Colors.RESET)
+
+                if (attackDifference > 0) {
+                    println(Colors.ORANGE + "${opponent.name} loses $attackDifference points" + Colors.RESET)
+                } else {
+                    println(Colors.ORANGE + "${currentPlayer.name} loses ${-attackDifference} points" + Colors.RESET)
+                }
+
+                continueGame()
             } else {
                 // if the opponent's card is in defense:
                 // if the defense is greater, the attacker loses points equal to the difference between the cards' defense,
                 // else the opponent's card is destroyed and the player don't lose points
-                if (card.defense > cardToAttack.defense) {
-                    val defenseDifference = card.defense - cardToAttack.defense
-                    currentPlayer.points -= defenseDifference
-                    println(Colors.ORANGE + "${currentPlayer.name} loses $defenseDifference points" + Colors.RESET)
-                } else {
-                    opponent.boardCards.remove(cardToAttack)
+                val defenseDifference = attackerCard.attack - cardToAttack.defense
+
+                if (cardToAttack.defense < attackerCard.attack) {
+                    opponent.boardCards.removeAt(cardToAttackIndex)
                     println(Colors.ORANGE + "${cardToAttack.name} was destroyed" + Colors.RESET)
                 }
             }
@@ -184,8 +191,7 @@ class Game {
         currentPlayer.putCardOnBoard(card)
 
         println("Now you have ${currentPlayer.getTotalAttack()} attack and ${currentPlayer.getTotalDefense()} defense.")
-        println("Press enter to continue")
-        readln()
+        continueGame()
     }
 
     private fun handleEquipmentCard(card: Card) {
@@ -213,7 +219,11 @@ class Game {
         currentPlayer.boardCards[cardToEquipIndex].equip(card)
 
         println("Now you have ${currentPlayer.getTotalAttack()} attack and ${currentPlayer.getTotalDefense()} defense.")
-        println("Press enter to continue")
+        continueGame()
+    }
+
+    private fun continueGame() {
+        println("\n${Colors.CYAN}Press enter to continue ${Colors.RESET}")
         readln()
     }
 

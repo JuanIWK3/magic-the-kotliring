@@ -12,16 +12,6 @@ class Player(var name: String) {
         handCards.addAll(CardsReader.get5RandomCards())
     }
 
-    private fun printCards(cards: List<Card>, title: String) {
-        println("$title:")
-        if (cards.isEmpty()) {
-            println(Colors.RED + "No cards" + Colors.RESET)
-        }
-
-        cards.forEachIndexed { index, card ->
-            println("${index + 1} - $card")
-        }
-    }
 
     private fun isValidCardIndex(cardIndex: Int): Boolean {
         return cardIndex >= 0 && cardIndex < handCards.size
@@ -71,11 +61,28 @@ class Player(var name: String) {
     }
 
     fun printHandCards() {
-        printCards(handCards, "Your hand cards")
+        println("Your hand cards")
+
+        if (this.handCards.isEmpty()) {
+            println(Colors.RED + "No cards" + Colors.RESET)
+        }
+
+        this.handCards.forEachIndexed { index, card ->
+            println("${index + 1} - $card")
+        }
     }
 
     fun printBoardCards() {
-        printCards(boardCards, "Board cards")
+        println("Board cards")
+
+        if (this.boardCards.isEmpty()) {
+            println(Colors.RED + "No cards" + Colors.RESET)
+        }
+
+        this.boardCards.forEachIndexed { index, card ->
+            val stance = if (card.position == 1) "Attack" else "Defense"
+            println("${index + 1} - $stance - $card")
+        }
     }
 
     fun discardCard() {
@@ -83,7 +90,7 @@ class Player(var name: String) {
             println(Colors.RED + "You don't have any cards in your hand to discard" + Colors.RESET)
             return
         }
-        
+
         printHandCards()
         print("Select a card to discard: ")
 
